@@ -9,3 +9,4 @@
     - oracle_jdk
     - rbenv
     - nginx
+    - php-fpm
