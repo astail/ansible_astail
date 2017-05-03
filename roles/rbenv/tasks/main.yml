@@ -1,0 +1,55 @@
+---
+
+- name: yum install rbenv common
+  yum: name={{ item }}
+  with_items:
+    - git
+    - gcc
+    - gcc-c++
+    - openssl-devel
+    - readline-devel
+
+- name: git clone git@github.com:rbenv/rbenv.git {{ tmp }}/rbenv
+  git: repo=https://github.com/rbenv/rbenv.git dest={{ tmp }}/rbenv accept_hostkey=yes
+  become: false
+  ignore_errors: true
+
+- name: git clone git@github.com:rbenv/ruby-build.git {{ tmp }}/rbenv/plugins/ruby-build
+  git: repo=https://github.com/rbenv/ruby-build.git dest={{ tmp }}/ruby-build accept_hostkey=yes
+  become: false
+  ignore_errors: true
+
+- name: bashrc rbenv path
+  lineinfile:
+    dest=/etc/bashrc
+    regexp="{{ item.regexp }}"
+    line="{{ item.line }}"
+    insertafter=EOF
+  with_items:
+    - { regexp: '^export RBENV_ROOT="/usr/local/rbenv"', line: 'export RBENV_ROOT="/usr/local/rbenv"' }
+    - { regexp: '^export PATH="\${RBENV_ROOT}/bin:\${PATH}"', line: 'export PATH="${RBENV_ROOT}/bin:${PATH}"' }
+    - { regexp: '^eval "\$\(rbenv init --no-rehash -\)"', line: 'eval "$(rbenv init --no-rehash -)"' }
+
+- name: cp {{ tmp }}/rbenv /usr/local/rbenv
+  command: cp -rf {{ tmp }}/rbenv /usr/local/rbenv creates=/usr/local/rbenv
+
+- name: mkdir /usr/local/rbenv/plugins
+  file: path=/usr/local/rbenv/plugins state=directory
+
+- name: cp {{ tmp }}/ruby-build /usr/local/rbenv/plugins/ruby-build
+  command: cp -rf {{ tmp }}/ruby-build /usr/local/rbenv/plugins/ruby-build creates=/usr/local/rbenv/plugins/ruby-build
+
+- name: ruby install {{ ruby_version }}
+  shell: source /etc/bashrc && rbenv install {{ ruby_version }} && rbenv global {{ ruby_version }} && rbenv rehash creates=/usr/local/rbenv/versions/{{ ruby_version }}
+
+- name: gem install bundler
+  gem: name=bundler executable=/usr/local/rbenv/shims/gem user_install=False
+
+- name: ln /usr/local/rbenv/bin/rbenv /usr/local/bin/rbenv
+  file: src=/usr/local/rbenv/bin/rbenv dest=/usr/local/bin/rbenv state=link
+
+- name: ln ruby bundle
+  file: src=/usr/local/rbenv/shims/{{ item }} dest=/usr/local/bin/{{ item }} state=link
+  with_items:
+    - ruby
+    - bundle
