@@ -1,0 +1,25 @@
+---
+
+- name: install repo
+  yum: name=https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
+
+- name: yum install mysql-community-server
+  yum: name=mysql-community-server
+
+- name: install MySQL-python
+  yum: name=MySQL-python
+
+- name: start mysqld
+  systemd: name=mysqld state=started enabled=yes
+
+- name: password
+  shell: cat /var/log/mysqld.log | grep 'temporary password' | awk '{ print $NF }'
+  register: mysql_passwd
+
+#- name: root passwd
+#  mysql_user:
+#    name={{ db_root_user }}
+#    password='{{ db_root_user_password }}'
+#    login_user={{ db_root_user }}
+#    login_password='{{ mysql_passwd.stdout }}'
+#    check_implicit_admin=yes

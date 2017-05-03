@@ -1,2 +1,5 @@
 [astail_net]
 astail.net
+
+[vps:children]
+astail_net

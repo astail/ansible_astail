@@ -10,3 +10,4 @@
     - rbenv
     - nginx
     - php-fpm
+    - mysql
