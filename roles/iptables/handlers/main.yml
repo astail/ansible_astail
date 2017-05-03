@@ -1,0 +1,4 @@
+---
+
+- name: service restart iptables
+  systemd: name=iptables state=restarted daemon_reload=yes
