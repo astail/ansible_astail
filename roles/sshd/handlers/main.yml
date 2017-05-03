@@ -2,4 +2,3 @@
 
 - name: reload sshd service
   service: name=sshd state=reloaded enabled=yes
-
