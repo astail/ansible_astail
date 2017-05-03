@@ -1,0 +1,47 @@
+---
+
+- name: add nginx repo
+  yum: name=http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+
+- name: install update nginx-release-centos
+  yum: name=nginx-release-centos state=latest
+
+- name: install nginx
+  yum: name=nginx enablerepo=nginx
+
+- name: mkdir /etc/nginx/conf.d
+  file: path=/etc/nginx/conf.d state=directory
+
+- name: check file descriptor
+  shell: cat /etc/systemd/system.conf | grep DefaultLimitNOFILE=65535
+  register: descriptor_status
+  changed_when: descriptor_status.rc == 1
+  failed_when: descriptor_status == 1
+
+- name: change file descriptor
+  lineinfile: dest=/etc/systemd/system.conf
+              regexp="#DefaultLimitNOFILE"
+              value="DefaultLimitNOFILE=65535"
+              insertafter=EOF
+              state=present
+  when: descriptor_status.rc == 1
+
+- name: copy log_format.conf
+  copy: src=log_format.conf dest=/etc/nginx/log_format.conf
+  notify: restart nginx service
+
+- name: mkdir log directory nginx
+  file: path=/var/log/nginx state=directory mode=0755 owner=nginx group=nginx
+
+- name: mkdir log directory localhost
+  file: path=/var/log/nginx/localhost state=directory
+  notify: restart nginx service
+
+- name: chown nginx log
+  file: path=/var/log/nginx state=directory recurse=yes owner=nginx group=nginx
+
+- name: copy nginx logrotate file
+  copy: src=nginx.logrotate dest=/etc/logrotate.d/nginx
+
+- name: service nginx start
+  systemd: name=nginx state=started

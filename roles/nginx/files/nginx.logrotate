@@ -1,0 +1,14 @@
+compresscmd /usr/bin/xz
+compressext .xz
+uncompresscmd /usr/bin/unxz
+
+/var/log/nginx/*_log /var/log/nginx/*.log /var/log/nginx/*/*.log {
+    daily
+    missingok
+    rotate 180
+    delaycompress
+    sharedscripts
+    postrotate
+        nginx -s reopen
+    endscript
+}
