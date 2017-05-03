@@ -5,3 +5,6 @@
   roles:
     - common
     - sshd
+    - oracle_jdk
+    - rbenv
+    - nginx
