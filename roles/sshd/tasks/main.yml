@@ -26,7 +26,7 @@
   notify: reload sshd service
 
 - name: add user
-  user: name={{ ssh_user }} password='$6$BvOt7lnL$DQ01Fnc7k1f/eAqkrcfdELhZMhn4i6RRsRv3nDXq/SJAOBjvsU4UoOrsFB3yAEj753w1hoEvwpY2RfHulpg1H0'
+  user: name={{ ssh_user }}
 
 - name: mkdir .ssh
   file: path=/home/{{ ssh_user }}/.ssh owner={{ ssh_user }} group={{ ssh_user }} mode=700 state=directory
