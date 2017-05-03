@@ -1,0 +1,134 @@
+---
+
+- name: install libselinux-python
+  yum: name=libselinux-python
+
+- name: disable selinux
+  selinux: state=disabled
+
+- name: check language
+  shell: localectl status | grep LANG=en_US.UTF-8
+  register: localectl_status
+  changed_when: localectl_status.rc == 1
+  failed_when: localectl_status == 1
+
+- name: setup language
+  shell: localectl set-locale LANG=en_US.UTF-8
+  when: localectl_status.rc == 1
+
+- name: check timezone
+  shell: timedatectl status | grep Asia/Tokyo
+  register: timedatectl_status
+  changed_when: timedatectl_status.rc == 1
+  failed_when: timedatectl_status == 1
+
+- name: setup timezone
+  shell: timedatectl set-timezone Asia/Tokyo
+  when: timedatectl_status.rc == 1
+
+- name: setup umask
+  lineinfile: dest=/etc/profile line='umask 0022'
+
+- name: install epel repository
+  yum: name=epel-release
+
+- name: yum group-install
+  yum: name="{{ item }}"
+  with_items:
+   - "@Base"
+   - "@Development tools"
+
+- name: install common service
+  yum: name="{{ item }}"
+  register: install_status
+  with_items:
+   - acpid
+   - sysstat
+   - tcpdump
+   - git
+   - dstat
+   - iotop
+   - screen
+   - zsh
+   - ksh
+   - gdisk
+   - ncurses-devel
+   - rsyslog
+   - ntp
+   - logrotate
+   - ethtool
+   - sssd
+   - sssd-client
+   - sssd-ldap
+   - openldap-clients
+   - bind-utils
+   - net-tools
+   - telnet
+   - traceroute
+   - wget
+   - vim
+   - authconfig
+   - ncurses
+
+- name: install epel common service
+  yum: name="{{ item }}" enablerepo=epel
+  with_items:
+   - iftop
+   - htop
+   - jq
+
+- name: epel repository disable
+  replace: dest=/etc/yum.repos.d/epel.repo regexp="enabled *= *1" replace="enabled=0"
+
+- name: systemctl daemon reload
+  systemd: name=* daemon_reload=yes
+
+- name: start common service
+  service: name="{{ item }}" enabled=yes
+  with_items:
+   - acpid
+   - sysstat
+
+- name: check tmux install
+  shell: ls /usr/local/bin/ | grep tmux
+  register: tmux_status
+  changed_when: tmux_status.rc == 1
+  failed_when: tmux_status == 1
+
+- name: wget libevent-2.0.22-stable
+  get_url: url=https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz dest=/usr/local/src/libevent-2.0.22-stable.tar.gz
+  when: tmux_status.stdout.find('tmux') == -1
+
+- name: libevent-2.0.22-stable install
+  shell: cd /usr/local/src && tar xvzf libevent-2.0.22-stable.tar.gz && cd libevent-2.0.22-stable && ./configure && make && make install
+  when: tmux_status.rc == 1
+
+- name: omazinai
+  shell: echo /usr/local/lib > /etc/ld.so.conf.d/libevent.conf && ldconfig
+  when: tmux_status.rc == 1
+
+- name: wget tmux 2.4
+  get_url: url=https://github.com/tmux/tmux/releases/download/2.4/tmux-2.4.tar.gz dest={{ tmp }}/tmux-2.4.tar.gz
+  when: tmux_status.rc == 1
+
+- name: tmux install
+  shell: cd "{{ tmp }}"  && tar xvzf tmux-2.4.tar.gz && cd tmux-2.4 && ./configure && make && make install
+  when: tmux_status.rc == 1
+
+- name: sed DefaultLimitNOFILE=65535 /etc/systemd/system.conf
+  replace: >-
+    dest='/etc/systemd/system.conf'
+    regexp='#DefaultLimitNOFILE='
+    replace='DefaultLimitNOFILE=65535'
+
+- name: mkdir /root/.ssh
+  file: path=/root/.ssh state=directory owner=root group=root mode=0700
+
+- name: copy authorized_keys
+  copy: src=authorized_keys dest=/root/.ssh/authorized_keys owner=root group=root mode=700
+
+- name: chrony stop
+  systemd: name=chronyd state=stopped enabled=no
+
+- name: start ntpd
+  systemd: name=ntpd state=started enabled=yes
