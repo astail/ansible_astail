@@ -1,14 +1,14 @@
 ---
 
-- name: copy jdk-8u131-linux-x64.rpm
+- name: copy jdk-8u102-linux-x64.rpm
   get_url:
-    url=http://download.oracle.com/otn-pub/java/jdk/8u131-b14/jdk-8u131-linux-x64.rpm
-    dest=/usr/local/src/jdk-8u131-linux-x64.rpm
+    url=http://download.oracle.com/otn-pub/java/jdk/8u102-b14/jdk-8u102-linux-x64.rpm
+    dest=/usr/local/src/jdk-8u102-linux-x64.rpm
     headers="Cookie:' gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie'"
     validate_certs=no
     owner=root
     group=root
     mode=744
 
-- name: install jdk-8u131-linux-x64.rpm
-  yum: name=/usr/local/src/jdk-8u131-linux-x64.rpm state=present
+- name: install jdk-8u102-linux-x64.rpm
+  yum: name=/usr/local/src/jdk-8u102-linux-x64.rpm state=present
