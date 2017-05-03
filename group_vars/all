@@ -1,3 +1,4 @@
 ---
 
 tmp: /tmp
+ssh_user: astel

@@ -121,12 +121,6 @@
     regexp='#DefaultLimitNOFILE='
     replace='DefaultLimitNOFILE=65535'
 
-- name: mkdir /root/.ssh
-  file: path=/root/.ssh state=directory owner=root group=root mode=0700
-
-- name: copy authorized_keys
-  copy: src=authorized_keys dest=/root/.ssh/authorized_keys owner=root group=root mode=700
-
 - name: chrony stop
   systemd: name=chronyd state=stopped enabled=no
 
