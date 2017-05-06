@@ -11,3 +11,4 @@
     - nginx
     - php-fpm
     - mysql
+    - my_nginx_conf

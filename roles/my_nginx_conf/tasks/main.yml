@@ -1,0 +1,23 @@
+---
+
+- name: copy nginx.conf
+  copy: src=nginx.conf dest=/etc/nginx/nginx.conf
+  notify: restart nginx service
+
+- name: copy log_format.conf
+  copy: src=log_format.conf dest=/etc/nginx/log_format.conf
+  notify: restart nginx service
+
+- name: copy astail.conf
+  copy: src=astail.conf dest=/etc/nginx/conf.d/astail.conf
+  notify: restart nginx service
+
+- name: mkdir /var/log/nginx/astail
+  file: path=/var/log/nginx/astail  state=directory owner=nginx group=nginx
+
+- name: delete default.conf
+  file: path=/etc/nginx/conf.d/default.conf state=absent
+  notify: restart nginx service
+
+- name: mkdir /var/www/astail
+  file: path=/var/www/astail state=directory

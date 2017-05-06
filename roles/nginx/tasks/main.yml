@@ -26,10 +26,6 @@
               state=present
   when: descriptor_status.rc == 1
 
-- name: copy log_format.conf
-  copy: src=log_format.conf dest=/etc/nginx/log_format.conf
-  notify: restart nginx service
-
 - name: mkdir log directory nginx
   file: path=/var/log/nginx state=directory mode=0755 owner=nginx group=nginx
 
