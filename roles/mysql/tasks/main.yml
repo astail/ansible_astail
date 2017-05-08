@@ -23,7 +23,7 @@
   ignore_errors: True
 
 - name: first check password
-  shell: cat /var/log/mysqld.log | grep 'temporary password' | awk '{ print $NF }'
+  shell: grep 'temporary password' /var/log/mysqld.log | awk '{ print $NF }'
   register: mysql_passwd
   when: mysql_status_check|failed
 
