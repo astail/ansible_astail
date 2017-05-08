@@ -11,4 +11,5 @@
     - nginx
     - php-fpm
     - mysql
+    - wordpress
     - my_nginx_conf

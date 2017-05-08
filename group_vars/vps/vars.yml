@@ -1,3 +1,6 @@
 ---
 
 db_root_user_password: "{{ vault_db_root_user_password }}"
+web_root: /var/www/astail
+
+wordpress_version: 4.7.4
