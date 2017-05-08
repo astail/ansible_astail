@@ -12,14 +12,21 @@
 - name: start mysqld
   systemd: name=mysqld state=started enabled=yes
 
-- name: password
+- name: root passwd check
+  mysql_user:
+    name=root
+    password='{{ db_root_user_password }}'
+    login_user=root
+    login_password='{{ db_root_user_password }}'
+    check_implicit_admin=yes
+  register: mysql_status_check
+  ignore_errors: True
+
+- name: first check password
   shell: cat /var/log/mysqld.log | grep 'temporary password' | awk '{ print $NF }'
   register: mysql_passwd
+  when: mysql_status_check|failed
 
-#- name: root passwd
-#  mysql_user:
-#    name={{ db_root_user }}
-#    password='{{ db_root_user_password }}'
-#    login_user={{ db_root_user }}
-#    login_password='{{ mysql_passwd.stdout }}'
-#    check_implicit_admin=yes
+- name: fix root passwd
+  command: mysqladmin -p{{ mysql_passwd.stdout }} password {{ db_root_user_password }}
+  when: mysql_status_check|failed

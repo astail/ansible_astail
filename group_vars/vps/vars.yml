@@ -1,4 +1,3 @@
 ---
 
-db_root_user: root
 db_root_user_password: "{{ vault_db_root_user_password }}"
