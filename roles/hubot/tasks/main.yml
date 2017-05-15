@@ -1,0 +1,22 @@
+---
+
+- name: mkdir /opt/hubot_slack
+  file: path=/opt/hubot_slack mode=775 state=directory
+
+- name: install nodejs npm
+  yum: name={{ item }} enablerepo=epel
+  with_items:
+    - nodejs
+    - npm
+
+- name: npm install
+  npm: name={{ item }} global=yes
+  with_items:
+    - hubot
+    - yo
+    - generator-hubot
+    - coffee-script
+    - forever
+
+- name: copy hubot_forever
+  template: src=hubot_forever dest=/opt/hubot_slack/hubot_forever mode=755

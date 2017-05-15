@@ -4,6 +4,10 @@
   become: true
   roles:
     - common
+
+- hosts: astail_net
+  become: true
+  roles:
     - sshd
     - iptables
     - oracle_jdk
@@ -13,3 +17,4 @@
     - mysql
     - wordpress
     - my_nginx_conf
+    - hubot
