@@ -1,0 +1,17 @@
+---
+
+- name: wget kibana
+  get_url: url=https://artifacts.elastic.co/downloads/kibana/kibana-5.4.0-x86_64.rpm dest={{ tmp }}/kibana-5.4.0-x86_64.rpm
+
+- name: install kibana
+  yum: name={{ tmp }}/kibana-5.4.0-x86_64.rpm
+
+- name: service kibana start
+  systemd: name=kibana state=started enabled=yes
+
+- name: mkdir log directory nginx kibana
+  file: path=/var/log/nginx/kibana state=directory mode=0755 owner=nginx group=nginx
+
+- name: copy kibana nginx
+  template: src=nginx_kibana.conf dest=/etc/nginx/conf.d/kibana.conf
+  notify: restart nginx service

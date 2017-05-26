@@ -1,0 +1,10 @@
+---
+
+#- name: copy template_all.json
+#  copy: src=template_all.json dest={{ tmp }}/template_all.json
+#
+#- name: sleep 120s && curl -XPUT
+#  shell: sleep 120s && curl -XPUT localhost:9200/_template/logstash_template/ -d "`cat {{ tmp }}/template_all.json `"
+#
+#- name: curl -XDELETE
+#  shell: curl -XDELETE 'http://localhost:9200/*'

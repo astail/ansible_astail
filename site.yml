@@ -25,3 +25,5 @@
   roles:
     - fluentd
     - elasticsearch
+    - kibana
+    - my_fek
