@@ -1,5 +1,27 @@
 ---
 
+- name: install fluentd plugin
+  gem: name={{ item }} user_install=False
+  with_items:
+    - fluent-plugin-norikra
+    - fluent-plugin-filter
+    - fluent-plugin-forest
+    - fluent-plugin-config-expander
+    - fluent-plugin-elasticsearch
+    - fluent-plugin-typecast
+    - fluent-plugin-parser
+    - fluent-plugin-record-reformer
+
+- name: my fluentd conf
+  copy: src=astail_fluentd.conf dest=/etc/fluentd/fluentd.conf
+
+- name: mkdir log directory nginx kibana
+  file: path=/var/log/nginx/kibana state=directory mode=0755 owner=nginx group=nginx
+
+- name: copy kibana nginx
+  template: src=nginx_kibana.conf dest=/etc/nginx/conf.d/kibana.conf
+  notify: restart nginx service
+
 #- name: copy template_all.json
 #  copy: src=template_all.json dest={{ tmp }}/template_all.json
 #

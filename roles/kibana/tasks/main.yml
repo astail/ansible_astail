@@ -8,10 +8,3 @@
 
 - name: service kibana start
   systemd: name=kibana state=started enabled=yes
-
-- name: mkdir log directory nginx kibana
-  file: path=/var/log/nginx/kibana state=directory mode=0755 owner=nginx group=nginx
-
-- name: copy kibana nginx
-  template: src=nginx_kibana.conf dest=/etc/nginx/conf.d/kibana.conf
-  notify: restart nginx service
