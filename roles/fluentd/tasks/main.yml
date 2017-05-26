@@ -1,0 +1,38 @@
+---
+
+- name: create group fluentd
+  group: name=fluentd gid=24224
+
+- name: create fluentd user
+  user: name=fluentd group=fluentd shell=/sbin/nologin uid=24224
+
+- name: install postgresql-devel
+  yum: name=postgresql-devel
+
+- name: install fluentd
+  gem: name=fluentd user_install=False version=0.14.16
+
+- name: mkdir fluentd conf log pid
+  file: path={{ item }} state=directory owner=fluentd group=fluentd
+  with_items:
+    - /etc/fluentd
+    - /var/log/fluentd
+    - /var/fluentd
+
+- name: copy default fluentd conf
+  copy: src=fluentd.default.conf dest=/etc/fluentd/fluentd.conf
+
+- name: copy start script service
+  copy: src=fluentd.service dest=/etc/systemd/system/fluentd.service mode=755
+
+- name: systemctl daemon reload
+  shell: systemctl daemon-reload
+
+- name: fluentd logrotate
+  copy: src=logrotate_fluentd dest=/etc/logrotate_fluentd.conf
+
+- name: cron fluentd logratate
+  cron: name="fluentd logratate" minute="0" hour="12" job="/usr/sbin/logrotate -f /etc/logrotate_fluentd.conf" user="root"
+
+- name: service start fluentd
+  systemd: name=fluentd state=started enabled=yes

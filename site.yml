@@ -19,3 +19,4 @@
     - my_nginx_conf
     - hubot
     - my_hubot
+    - fluentd

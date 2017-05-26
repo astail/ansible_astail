@@ -1,0 +1,14 @@
+/var/log/fluentd/fluentd.log {
+  daily
+  dateext
+  rotate 30
+  compress
+  delaycompress
+  notifempty
+  create 644 fluentd fluentd
+  sharedscripts
+  postrotate
+    pid=/var/fluentd/fluentd.pid
+    test -s $pid && kill -USR1 "$(cat $pid)"
+  endscript
+}

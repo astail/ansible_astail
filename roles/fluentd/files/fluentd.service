@@ -1,0 +1,14 @@
+[Unit]
+Description=fluentd daemon
+
+[Service]
+Type=simple
+User=fluentd
+Group=fluentd
+PIDFile=/var/fluentd/fluentd.pid
+ExecStart=/usr/local/rbenv/shims/ruby /usr/local/rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/fluentd-0.14.16/bin/fluentd --config /etc/fluentd/fluentd.conf --log /var/log/fluentd/fluentd.log
+LimitNOFILE=65536
+LimitNPROC=65536
+
+[Install]
+WantedBy=multi-user.target
