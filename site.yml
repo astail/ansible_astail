@@ -19,4 +19,9 @@
     - my_nginx_conf
     - hubot
     - my_hubot
+
+- hosts: astail_net
+  become: true
+  roles:
     - fluentd
+    - elasticsearch
