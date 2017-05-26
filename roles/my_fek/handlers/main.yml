@@ -2,3 +2,6 @@
 
 - name: restart nginx service
   systemd: name=nginx state=restarted daemon_reload=yes
+
+- name: restart fluentd service
+  systemd: name=fluentd state=restarted daemon_reload=yes
