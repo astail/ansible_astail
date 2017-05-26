@@ -48,8 +48,16 @@
 - name: ln /usr/local/rbenv/bin/rbenv /usr/local/bin/rbenv
   file: src=/usr/local/rbenv/bin/rbenv dest=/usr/local/bin/rbenv state=link
 
-- name: ln ruby bundle
+- name: ln ruby bundle gem /usr/local/bin
   file: src=/usr/local/rbenv/shims/{{ item }} dest=/usr/local/bin/{{ item }} state=link
   with_items:
     - ruby
     - bundle
+    - gem
+
+- name: ln ruby bundle gem /usr/local/sbin
+  file: src=/usr/local/rbenv/shims/{{ item }} dest=/usr/local/sbin/{{ item }} state=link
+  with_items:
+    - ruby
+    - bundle
+    - gem
