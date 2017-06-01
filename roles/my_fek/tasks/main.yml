@@ -12,7 +12,7 @@
     - fluent-plugin-parser
     - fluent-plugin-record-reformer
 
-- name: my fluentd conf
+- name: copy fluentd conf
   copy: src=astail_fluentd.conf dest=/etc/fluentd/fluentd.conf
   notify: restart fluentd service
 
@@ -23,11 +23,14 @@
   template: src=nginx_kibana.conf dest=/etc/nginx/conf.d/kibana.conf
   notify: restart nginx service
 
-#- name: copy template_all.json
-#  copy: src=template_all.json dest={{ tmp }}/template_all.json
-#
-#- name: sleep 120s && curl -XPUT
-#  shell: sleep 120s && curl -XPUT localhost:9200/_template/logstash_template/ -d "`cat {{ tmp }}/template_all.json `"
-#
-#- name: curl -XDELETE
-#  shell: curl -XDELETE 'http://localhost:9200/*'
+- name: copy template_all.json
+  copy: src=template_all.json dest={{ tmp }}/template_all.json
+  register: check_template
+
+- name: curl -XPUT template_all.json
+  shell: curl -XPUT localhost:9200/_template/logstash_template/ -d "`cat {{ tmp }}/template_all.json`"
+  when: check_template|changed
+
+- name: curl -XDELETE
+  shell: curl -XDELETE 'http://localhost:9200/*'
+  when: check_template|changed
