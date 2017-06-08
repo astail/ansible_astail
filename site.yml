@@ -13,7 +13,7 @@
     - oracle_jdk
     - rbenv
     - nginx
-    - php-fpm
+    - php_fpm
     - mysql
     - wordpress
     - my_nginx_conf
