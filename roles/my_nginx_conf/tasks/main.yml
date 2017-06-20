@@ -21,3 +21,6 @@
 
 - name: mkdir {{ web_root }}
   file: path={{ web_root }} state=directory
+
+- name: start nginx service
+  systemd: name=nginx state=started enabled=yes
