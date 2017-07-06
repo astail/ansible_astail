@@ -27,3 +27,8 @@
     - elasticsearch
     - kibana
     - my_fek
+
+- hosts: astail_net
+  become: true
+  roles:
+    - asvie_unicorn
