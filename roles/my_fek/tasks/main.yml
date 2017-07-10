@@ -34,3 +34,12 @@
 - name: curl -XDELETE
   shell: curl -XDELETE 'http://localhost:9200/*'
   when: check_template|changed
+
+- name: mkdir /opt/batch
+  file: path=/opt/batch owner=astel group=wheel mode=775 state=directory
+
+- name: copy elasticsearch DELETE batch
+  copy: src=elasticsearch_delete.sh owner=astel group=wheel mode=775
+
+- name: cron elasticsearch DELETE batch
+  cron: name="elasticsearch_delete" minute="5" hour="8" job="/opt/batch/elasticsearch_delete.sh" user="astel"
