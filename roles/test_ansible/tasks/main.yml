@@ -1,9 +1,15 @@
 ---
 
-- name: test inventory file
-  shell: echo {{ inventory_file }}
-  register: check
-  changed_when: False
+#- name: test inventory file
+#  shell: echo {{ inventory_file }}
+#  register: check
+#  changed_when: False
+#
+#- debug: var=check
+#  when: check | success
 
-- debug: var=check
-  when: check | success
+- name: mkdir
+  file: path=/tmp/hogehoge/{{ item }} state=directory
+  with_items:
+    - piyo
+    - hoge
