@@ -1,16 +1,25 @@
 ---
 
 - name: install iptables-services
-  yum: name=iptables-services
+  yum:
+    name: iptables-services
 
 - name: copy iptables.conf
-  template: src=iptables dest=/etc/sysconfig/iptables
+  template:
+    src: iptables
+    dest: /etc/sysconfig/iptables
   notify: service restart iptables
 
 - name: stop firewalld
-  systemd: name=firewalld state=stopped enabled=no
+  systemd:
+    name: firewalld
+    state: stopped
+    enabled: no
   ignore_errors: True
   changed_when: False
 
 - name: service start iptables
-  systemd: name=iptables state=started enabled=yes
+  systemd:
+    name: iptables
+    state: started
+    enabled: yes
