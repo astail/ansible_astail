@@ -1,7 +1,10 @@
 ---
 
 - name: install php php-fpm php-mysqlnd php-mbstring php-bcmath php-gd php-xml php-mcrypt php-pear php-devel pcre-devel php-cli php-ldap php-pdo php-pear-MDB2 php-pear-MDB2-Driver-mysqli php-pear-Net-Curl php-process php-pecl-apc
-  yum: name={{ item }} state=present enablerepo=epel
+  yum:
+    name: "{{ item }}"
+    state: present
+    enablerepo: epel
   with_items:
     - php
     - php-fpm
@@ -24,19 +27,41 @@
     - php-pecl-apc
 
 - name: copy www.conf
-  copy: src=www.conf dest=/etc/php-fpm.d/www.conf
+  copy:
+    src: www.conf
+    dest: /etc/php-fpm.d/www.conf
 
 - name: mkdir /var/log/php-fpm
-  file: path=/var/log/php-fpm owner=nginx group=wheel state=directory mode=775
+  file:
+    path: /var/log/php-fpm
+    owner: nginx
+    group: wheel
+    state: directory
+    mode: 0775
 
 - name: mkdir /var/run/php-fpm
-  file: path=/var/run/php-fpm owner=nginx group=wheel state=directory mode=777
+  file:
+    path: /var/run/php-fpm
+    owner: nginx
+    group: wheel
+    state: directory
+    mode: 0777
 
 - name: mkdir /var/nginx
-  file: path=/var/nginx owner=nginx group=wheel state=directory mode=775
+  file:
+    path: /var/nginx
+    owner: nginx
+    group: wheel
+    state: directory
+    mode: 0775
 
 - name: chown nginx /var/lib/php
-  file: path=/var/lib/php/{{ item }} owner=nginx group=wheel state=directory recurse=yes
+  file:
+    path: "/var/lib/php/{{ item }}"
+    owner: nginx
+    group: wheel
+    state: directory
+    recurse: yes
   with_items:
     - opcache
     - session
@@ -44,30 +69,41 @@
 
 - name: edit typezone
   lineinfile:
-    regexp='^date.timezone'
-    line='date.timezone = Asia/Tokyo'
-    insertafter=EOF
-    state=present
-    dest=/etc/php.ini
+    regexp: '^date.timezone'
+    line: 'date.timezone = Asia/Tokyo'
+    insertafter: EOF
+    state: present
+    dest: /etc/php.ini
 
 - name: edit php.ini
   lineinfile:
-    regexp='^{{ item.name }}'
-    line='{{ item.name }} = {{ item.value }}'
-    insertafter=EOF
-    state=present
-    dest=/etc/php.ini
+    regexp: '^{{ item.name }}'
+    line: '{{ item.name }} = {{ item.value }}'
+    insertafter: EOF
+    state: present
+    dest: /etc/php.ini
   with_items: '{{ php_ini }}'
   notify: restart php-fpm
 
 - name: start php-fpm service
-  service: name=php-fpm state=started enabled=yes
+  service:
+    name: php-fpm
+    state: started
+    enabled: yes
 
 - name: install spawn-fcgi
-  yum: name=spawn-fcgi state=present enablerepo=epel
+  yum:
+    name: spawn-fcgi
+    state: present
+    enablerepo: epel
 
 - name: copy spawn-fcgi
-  copy: src=spawn-fcgi dest=/etc/sysconfig/spawn-fcgi
+  copy:
+    src: spawn-fcgi
+    dest: /etc/sysconfig/spawn-fcgi
 
 - name: start spawn-fcgi service
-  service: name=spawn-fcgi state=started enabled=yes
+  service:
+    name: spawn-fcgi
+    state: started
+    enabled: yes
