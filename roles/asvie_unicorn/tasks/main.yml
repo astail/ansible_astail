@@ -1,10 +1,13 @@
 ---
 
 - name: yum group-install Development tools
-  yum: name="@Development tools"
+  yum:
+    name: "@Development tools"
 
 - name: common install
-  yum: name={{ item }} enablerepo=epel
+  yum:
+    name: "{{ item }}"
+    enablerepo: epel
   with_items:
     - wget
     - openssl-devel
@@ -18,41 +21,65 @@
 
 - name: bashrc RAILS_ROOT
   lineinfile:
-    dest=/etc/bashrc
-    regexp="{{ item.regexp }}"
-    line="{{ item.line }}"
-    insertafter=EOF
+    dest: /etc/bashrc
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: EOF
   with_items:
     - { regexp: '^RAILS_ROOT={{ app_dir }}', line: 'RAILS_ROOT={{ app_dir }}' }
     - { regexp: '^export RAILS_ROOT', line: 'export RAILS_ROOT' }
 
 - name: mkdir unicorn run dir
-  file: path=/var/run/unicorn state=directory
+  file:
+    path: /var/run/unicorn
+    state: directory
 
 - name: copy tmpfiles_d_unicorn.conf
-  copy: src=tmpfiles_d_unicorn.conf dest=/etc/tmpfiles.d/unicorn.conf
+  copy:
+    src: tmpfiles_d_unicorn.conf
+    dest: /etc/tmpfiles.d/unicorn.conf
 
 - name: mkdir unicorn log dir
-  file: path=/var/log/unicorn state=directory
+  file:
+    path: /var/log/unicorn
+    state: directory
 
 - name: copy asvie-unicorn.service
-  template: src=asvie-unicorn.service dest=/usr/lib/systemd/system/asvie-unicorn.service
+  template:
+    src: asvie-unicorn.service
+    dest: /usr/lib/systemd/system/asvie-unicorn.service
 
 - name: systemctl daemon reload
-  systemd: name=asvie-unicorn.service daemon_reload=yes
+  systemd:
+    name: asvie-unicorn.service
+    daemon_reload: yes
 
 - name: service start asvie-unicorn
-  service: name=asvie-unicorn state=started enabled=yes
+  service:
+    name: asvie-unicorn
+    state: started
+    enabled: yes
 
 - name: mkdir directory log
-  file: path=/var/log/nginx/asvie state=directory owner=nginx group=nginx
+  file:
+    path: /var/log/nginx/asvie
+    state: directory
+    owner: nginx
+    group: nginx
 
 - name: delete nginx default.conf
-  file: path=/etc/nginx/conf.d/default.conf state=absent
+  file:
+    path: /etc/nginx/conf.d/default.conf
+    state: absent
 
 - name: copy nginx asvie.conf
-  copy: src=asvie.conf dest=/etc/nginx/conf.d/asvie.conf
+  copy:
+    src: asvie.conf
+    dest: /etc/nginx/conf.d/asvie.conf
   notify: restart nginx service
 
 - name: service nginx start enabled yes
-  systemd: name=nginx state=started enabled=yes
+  systemd:
+    name: nginx
+    state: started
+    enabled: yes

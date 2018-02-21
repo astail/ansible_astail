@@ -1,10 +1,16 @@
 ---
 
 - name: wget kibana
-  get_url: url=https://artifacts.elastic.co/downloads/kibana/kibana-5.4.0-x86_64.rpm dest={{ tmp }}/kibana-5.4.0-x86_64.rpm
+  get_url:
+    url: https://artifacts.elastic.co/downloads/kibana/kibana-5.4.0-x86_64.rpm
+    dest: "{{ tmp }}/kibana-5.4.0-x86_64.rpm"
 
 - name: install kibana
-  yum: name={{ tmp }}/kibana-5.4.0-x86_64.rpm
+  yum:
+    name: "{{ tmp }}/kibana-5.4.0-x86_64.rpm"
 
 - name: service kibana start
-  systemd: name=kibana state=started enabled=yes
+  systemd:
+    name: kibana
+    state: started
+    enabled: yes

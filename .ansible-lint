@@ -1,2 +1,3 @@
 skip_list:
   - ANSIBLE0016
+  - skip_ansible_lint

@@ -1,7 +1,9 @@
 ---
 
 - name: install fluentd plugin
-  gem: name={{ item }} user_install=False
+  gem:
+    name: "{{ item }}"
+    user_install: False
   with_items:
     - fluent-plugin-norikra
     - fluent-plugin-filter
@@ -13,33 +15,60 @@
     - fluent-plugin-record-reformer
 
 - name: copy fluentd conf
-  copy: src=astail_fluentd.conf dest=/etc/fluentd/fluentd.conf
+  copy:
+    src: astail_fluentd.conf
+    dest: /etc/fluentd/fluentd.conf
   notify: restart fluentd service
 
 - name: mkdir log directory nginx kibana
-  file: path=/var/log/nginx/kibana state=directory mode=0755 owner=nginx group=nginx
+  file:
+    path: /var/log/nginx/kibana
+    state: directory
+    mode: 0755
+    owner: nginx
+    group: nginx
 
 - name: copy kibana nginx
-  template: src=nginx_kibana.conf dest=/etc/nginx/conf.d/kibana.conf
+  template:
+    src: nginx_kibana.conf
+    dest: /etc/nginx/conf.d/kibana.conf
   notify: restart nginx service
 
 - name: copy template_all.json
-  copy: src=template_all.json dest={{ tmp }}/template_all.json
+  copy:
+    src: template_all.json
+    dest: "{{ tmp }}/template_all.json"
   register: check_template
 
 - name: curl -XPUT template_all.json
   shell: curl -XPUT localhost:9200/_template/logstash_template/ -d "`cat {{ tmp }}/template_all.json`"
   when: check_template|changed
+  tags: skip_ansible_lint
 
 - name: curl -XDELETE
   shell: curl -XDELETE 'http://localhost:9200/*'
   when: check_template|changed
+  tags: skip_ansible_lint
 
 - name: mkdir /opt/batch
-  file: path=/opt/batch owner=astel group=wheel mode=775 state=directory
+  file:
+    path: /opt/batch
+    owner: astel
+    group: wheel
+    mode: 0775
+    state: directory
 
 - name: copy elasticsearch DELETE batch
-  copy: src=elasticsearch_delete.sh owner=astel group=wheel mode=775
+  copy:
+    src: elasticsearch_delete.sh
+    owner: astel
+    group: wheel
+    mode: 0775
 
 - name: cron elasticsearch DELETE batch
-  cron: name="elasticsearch_delete" minute="5" hour="8" job="/opt/batch/elasticsearch_delete.sh" user="astel"
+  cron:
+    name: "elasticsearch_delete"
+    minute: "5"
+    hour: "8"
+    job: "/opt/batch/elasticsearch_delete.sh"
+    user: "astel"
