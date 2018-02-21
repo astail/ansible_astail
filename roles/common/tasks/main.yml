@@ -1,45 +1,44 @@
 ---
 
 - name: install libselinux-python
-  yum: name=libselinux-python
+  yum:
+    name: libselinux-python
 
 - name: disable selinux
-  selinux: state=disabled
+  selinux:
+    state: disabled
 
-- name: check language
-  shell: localectl status | grep LANG=en_US.UTF-8
-  register: localectl_status
-  changed_when: localectl_status.rc == 1
-  failed_when: localectl_status == 1
+- name: setup language en_US.UTF-8
+  copy:
+    src: locale.conf
+    dest: /etc/locale.conf
 
-- name: setup language
-  shell: localectl set-locale LANG=en_US.UTF-8
-  when: localectl_status.rc == 1
-
-- name: check timezone
-  shell: timedatectl status | grep Asia/Tokyo
-  register: timedatectl_status
-  changed_when: timedatectl_status.rc == 1
-  failed_when: timedatectl_status == 1
-
-- name: setup timezone
-  shell: timedatectl set-timezone Asia/Tokyo
-  when: timedatectl_status.rc == 1
+- name: Timezone Set
+  file:
+    src: /usr/share/zoneinfo/Asia/Tokyo
+    dest: /etc/localtime
+    state: link
+    force: yes
 
 - name: setup umask
-  lineinfile: dest=/etc/profile line='umask 0022'
+  lineinfile:
+    dest: /etc/profile
+    line: 'umask 0022'
 
 - name: install epel repository
-  yum: name=epel-release
+  yum:
+    name: epel-release
 
 - name: yum group-install
-  yum: name="{{ item }}"
+  yum:
+    name: "{{ item }}"
   with_items:
    - "@Base"
    - "@Development tools"
 
 - name: install common service
-  yum: name="{{ item }}"
+  yum:
+    name: "{{ item }}"
   register: install_status
   with_items:
    - acpid
@@ -71,20 +70,29 @@
    - ncurses
 
 - name: install epel common service
-  yum: name="{{ item }}" enablerepo=epel
+  yum:
+    name: "{{ item }}"
+    enablerepo: epel
   with_items:
    - iftop
    - htop
    - jq
 
 - name: epel repository disable
-  replace: dest=/etc/yum.repos.d/epel.repo regexp="enabled *= *1" replace="enabled=0"
+  replace:
+    dest: /etc/yum.repos.d/epel.repo
+    regexp: "enabled *= *1"
+    replace: "enabled=0"
 
 - name: systemctl daemon reload
-  systemd: name=* daemon_reload=yes
+  systemd:
+    name: "*"
+    daemon_reload: yes
 
 - name: start common service
-  service: name="{{ item }}" enabled=yes
+  service:
+    name: "{{ item }}"
+    enabled: yes
   with_items:
    - acpid
    - sysstat
@@ -96,7 +104,9 @@
   failed_when: tmux_status == 1
 
 - name: wget libevent-2.0.22-stable
-  get_url: url=https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz dest=/usr/local/src/libevent-2.0.22-stable.tar.gz
+  get_url:
+    url: https://github.com/libevent/libevent/releases/download/release-2.0.22-stable/libevent-2.0.22-stable.tar.gz
+    dest: /usr/local/src/libevent-2.0.22-stable.tar.gz
   when: tmux_status.stdout.find('tmux') == -1
 
 - name: libevent-2.0.22-stable install
@@ -108,7 +118,9 @@
   when: tmux_status.rc == 1
 
 - name: wget tmux 2.4
-  get_url: url=https://github.com/tmux/tmux/releases/download/2.4/tmux-2.4.tar.gz dest={{ tmp }}/tmux-2.4.tar.gz
+  get_url:
+    url: https://github.com/tmux/tmux/releases/download/2.4/tmux-2.4.tar.gz
+    dest: "{{ tmp }}/tmux-2.4.tar.gz"
   when: tmux_status.rc == 1
 
 - name: tmux install
@@ -116,13 +128,19 @@
   when: tmux_status.rc == 1
 
 - name: sed DefaultLimitNOFILE=65535 /etc/systemd/system.conf
-  replace: >-
-    dest='/etc/systemd/system.conf'
-    regexp='#DefaultLimitNOFILE='
-    replace='DefaultLimitNOFILE=65535'
+  replace:
+    dest: '/etc/systemd/system.conf'
+    regexp: '#DefaultLimitNOFILE='
+    replace: 'DefaultLimitNOFILE=65535'
 
 - name: chrony stop
-  systemd: name=chronyd state=stopped enabled=no
+  systemd:
+    name: chronyd
+    state: stopped
+    enabled: no
 
 - name: start ntpd
-  systemd: name=ntpd state=started enabled=yes
+  systemd:
+    name: ntpd
+    state: started
+    enabled: yes
