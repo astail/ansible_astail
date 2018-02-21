@@ -1,4 +1,6 @@
 ---
 
 - name: restart mariadb
-  service: name=mariadb state=restarted
+  service:
+    name: mariadb
+    state: restarted

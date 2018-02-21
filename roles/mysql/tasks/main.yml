@@ -1,24 +1,30 @@
 ---
 
 - name: install repo
-  yum: name=https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
+  yum:
+    name: https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
 
 - name: yum install mysql-community-server
-  yum: name=mysql-community-server
+  yum:
+    name: mysql-community-server
 
 - name: install MySQL-python
-  yum: name=MySQL-python
+  yum:
+    name: MySQL-python
 
 - name: start mysqld
-  systemd: name=mysqld state=started enabled=yes
+  systemd:
+    name: mysqld
+    state: started
+    enabled: yes
 
 - name: root passwd check
   mysql_user:
-    name=root
-    password='{{ db_root_user_password }}'
-    login_user=root
-    login_password='{{ db_root_user_password }}'
-    check_implicit_admin=yes
+    name: root
+    password: '{{ db_root_user_password }}'
+    login_user: root
+    login_password: '{{ db_root_user_password }}'
+    check_implicit_admin: yes
   register: mysql_status_check
   ignore_errors: True
 
