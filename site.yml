@@ -14,9 +14,9 @@
     - rbenv
     - nginx
     - php_fpm
+    - my_nginx_conf
     - mysql
     - wordpress
-    - my_nginx_conf
     - hubot
     - my_hubot
 

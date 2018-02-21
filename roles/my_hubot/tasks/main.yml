@@ -1,19 +1,30 @@
 ---
 
 - name: mkdir /opt/hubot_slack/scripts
-  file: path=/opt/hubot_slack/scripts mode=775 state=directory
+  file:
+    path: /opt/hubot_slack/scripts
+    mode: 0775
+    state: directory
 
 - name: copy coffee
-  copy: src={{ item }} dest=/opt/hubot_slack/scripts/{{ item }}
+  copy:
+    src: "{{ item }}"
+    dest: "/opt/hubot_slack/scripts/{{ item }}"
   with_items:
     - slack.coffee
     - userlocal-api.coffee
 
 - name: mkdir /opt/hubot_slack/scripts/shell
-  file: path=/opt/hubot_slack/scripts/shell mode=775 state=directory
+  file:
+    path: /opt/hubot_slack/scripts/shell
+    mode: 0775
+    state: directory
 
 - name: copy deploy shell
-  copy: src={{ item }} dest=/opt/hubot_slack/scripts/shell/{{ item }} mode=755
+  copy:
+    src: "{{ item }}"
+    dest: "/opt/hubot_slack/scripts/shell/{{ item }}"
+    mode: 0755
   with_items:
     - ls.sh
     - test.sh
