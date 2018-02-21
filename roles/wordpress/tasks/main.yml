@@ -1,9 +1,23 @@
 ---
 
+- name: mkdir {{ web_root }}
+  file:
+    path: "{{ web_root }}"
+    owner: nginx
+    group: wheel
+    state: directory
+
 - name: wget wordpress zip
-  get_url: url=https://ja.wordpress.org/wordpress-{{ wordpress_version }}-ja.zip dest={{ web_root }}/wordpress-{{ wordpress_version }}-ja.zip
+  get_url:
+    url: "https://ja.wordpress.org/wordpress-{{ wordpress_version }}-ja.zip"
+    dest: "{{ web_root }}/wordpress-{{ wordpress_version }}-ja.zip"
   register: wget_zip
 
 - name: unarchive wordpress.zip
-  unarchive: remote_src=yes src={{ web_root }}/wordpress-{{ wordpress_version }}-ja.zip dest={{ web_root }}
+  unarchive:
+    remote_src: yes
+    src: "{{ web_root }}/wordpress-{{ wordpress_version }}-ja.zip"
+    dest: "{{ web_root }}"
+    owner: nginx
+    group: wheel
   when: wget_zip|changed
