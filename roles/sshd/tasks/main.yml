@@ -2,48 +2,65 @@
 
 - name: edit sshd_config (PasswordAuthentication)
   lineinfile:
-    regexp='^PasswordAuthentication'
-    line='PasswordAuthentication no'
-    insertafter=EOF
-    state=present
-    dest=/etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+    insertafter: EOF
+    state: present
+    dest: /etc/ssh/sshd_config
 
 - name: edit sshd_config (ChallengeResponseAuthentication)
   lineinfile:
-    regexp='^ChallengeResponseAuthentication'
-    line='ChallengeResponseAuthentication no'
-    insertafter=EOF
-    state=present
-    dest=/etc/ssh/sshd_config
+    regexp: '^ChallengeResponseAuthentication'
+    line: 'ChallengeResponseAuthentication no'
+    insertafter: EOF
+    state: present
+    dest: /etc/ssh/sshd_config
 
 - name: edit sshd_config (PermitRootLogin)
   lineinfile:
-    regexp='^PermitRootLogin'
-    line='PermitRootLogin no'
-    insertafter=EOF
-    state=present
-    dest=/etc/ssh/sshd_config
+    regexp: '^PermitRootLogin'
+    line: 'PermitRootLogin no'
+    insertafter: EOF
+    state: present
+    dest: /etc/ssh/sshd_config
   notify: reload sshd service
 
 - name: add user
-  user: name={{ ssh_user }}
+  user:
+    name: "{{ ssh_user }}"
 
 - name: mkdir .ssh
-  file: path=/home/{{ ssh_user }}/.ssh owner={{ ssh_user }} group={{ ssh_user }} mode=700 state=directory
+  file:
+    path: /home/"{{ ssh_user }}"/.ssh
+    owner: "{{ ssh_user }}"
+    group: "{{ ssh_user }}"
+    mode: 0700
+    state: directory
 
 - name: copy authorized_keys
-  copy: src=authorized_keys dest=/home/{{ ssh_user }}/.ssh/authorized_keys mode=600 owner={{ ssh_user }} group={{ ssh_user }}
+  copy:
+    src: authorized_keys
+    dest: /home/"{{ ssh_user }}"/.ssh/authorized_keys
+    mode: 0600
+    owner: "{{ ssh_user }}"
+    group: "{{ ssh_user }}"
 
 - name: user add wheel group
-  user: name={{ ssh_user }} groups=wheel
+  user:
+    name: "{{ ssh_user }}"
+    groups: wheel
 
 - name: sudo NOPASS
-  lineinfile: "dest=/etc/sudoers state=present regexp='^%wheel' line='%wheel ALL=(ALL) NOPASSWD: ALL'"
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
 
 - name: edit /etc/pam.d/su
-  lineinfile: dest=/etc/pam.d/su
-              regexp="auth\s+required\s+pam_wheel.so use_uid"
-              value="auth required pam_wheel.so use_uid"
-              insertafter=EOF
-              state=present
-
+  lineinfile:
+    dest: /etc/pam.d/su
+    regexp: "auth\t\trequired\tpam_wheel.so\tuse_uid"
+    value: "auth\t\trequired\tpam_wheel.so\tuse_uid"
+    insertafter: EOF
+    state: present
