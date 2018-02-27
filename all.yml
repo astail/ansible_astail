@@ -1,6 +1,6 @@
 ---
 
-- hosts: astail_net
+- hosts: all
   become: true
   roles:
     - common
@@ -13,3 +13,10 @@
     - my_nginx_conf
     - mysql
     - wordpress
+    - hubot
+    - my_hubot
+    - fluentd
+    - elasticsearch
+    - kibana
+    - my_fek
+    - asvie_unicorn

@@ -14,7 +14,7 @@
 
 - name: copy astail.conf
   template:
-    src: astail.conf
+    src: "astail.conf.{{ astel_env }}"
     dest: /etc/nginx/conf.d/astail.conf
   notify: restart nginx service
 

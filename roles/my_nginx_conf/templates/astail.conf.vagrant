@@ -1,0 +1,21 @@
+server {
+  listen       80;
+  server_name  astail.net;
+  root   {{ web_root }}/wordpress;
+  index  index.php index.html;
+  charset UTF-8;
+  client_max_body_size 2G;
+
+  fastcgi_read_timeout 3600s;
+  fastcgi_buffers 64 4K;
+
+  location ~ ^(.+?\.php)(/.*)?$ {
+    fastcgi_pass unix:/var/run/php-fpm/php-fpm.sock;
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_param PATH_INFO $fastcgi_path_info;
+  }
+  access_log  /var/log/nginx/astail/access.log ltsv;
+  error_log   /var/log/nginx/astail/error.log warn;
+}

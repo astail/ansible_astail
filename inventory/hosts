@@ -1,5 +1,5 @@
 [astail_net]
 astail.net
 
-[vps:children]
+[production:children]
 astail_net

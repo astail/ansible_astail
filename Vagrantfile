@@ -15,6 +15,13 @@ Vagrant.configure(2) do |config|
   config.ssh.insert_key = false
   config.vm.provision "shell", inline: "systemctl restart network.service"
 
+  config.vm.provision "ansible" do |ansible|
+    ansible.verbose = "v"
+    ansible.playbook = "site.yml"
+    ansible.inventory_path = "inventory/vagrant"
+    ansible.limit = "all"
+    ansible.raw_arguments = "--vault-password-file=ansible_vault.txt"
+  end
 
   config.vm.define "node01" do |node|
     node.vm.hostname = "node01.example.com"

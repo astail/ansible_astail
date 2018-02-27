@@ -1,5 +1,9 @@
 ---
 
+tmp: /tmp
+ssh_user: astel
+ruby_version: 2.4.1
+
 db_root_user_password: "{{ vault_db_root_user_password }}"
 web_root: /var/www/astail
 
