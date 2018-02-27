@@ -1,0 +1,18 @@
+---
+
+version: 2
+jobs:
+  build:
+    working_directory: ~/ansible_astail
+    docker:
+      - image: circleci/python:2.7-stretch
+    steps:
+      - checkout
+
+      - run: sudo pip install
+      - run: sudo apt-get install libyaml-dev
+      - run: sudo pip install ansible
+      - run: echo "${ANSIBLE_VAULT_PASS}" > ansible_vault.txt
+      - run: ansible --version
+
+      - run: ansible-playbook -i "localhost," site.yml --syntax-check --vault-password-file ansible_vault.txt
