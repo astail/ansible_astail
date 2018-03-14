@@ -1,2 +1,3 @@
 .DS_Store
 .vagrant
+ansible_vault.txt
