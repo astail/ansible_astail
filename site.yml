@@ -13,3 +13,5 @@
     - my_nginx_conf
     - mysql
     - wordpress
+    - cpuminer
+    - my_cpuminer

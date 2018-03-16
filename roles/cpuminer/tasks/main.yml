@@ -1,0 +1,36 @@
+---
+
+- name: yum install python-devel
+  yum:
+    name: python-devel
+
+- name: git clone macchky/cpuminer
+  git:
+    version: master
+    repo: git@github.com:macchky/cpuminer.git
+    dest: "{{ tmp }}/cpuminer"
+    accept_hostkey: yes
+  become: false
+  ignore_errors: true
+
+- name: move dir /tmp to /usr/local
+  command: cp -rf {{ tmp }}/cpuminer /usr/local/cpuminer
+  args:
+    creates: /usr/local/cpuminer
+
+- name: make
+  shell: ./autogen.sh && ./nomacro.pl && ./configure CFLAGS="-O3" && make
+  args:
+    chdir: /usr/local/cpuminer
+    creates: /usr/local/cpuminer/minerd
+  tags: skip_ansible_lint
+
+- name: bashrc cpuminer path
+  lineinfile:
+    dest: /etc/bashrc
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: EOF
+  with_items:
+    - { regexp: '^export MINERENV_ROOT="/usr/local/cpuminer"', line: 'export MINERENV_ROOT="/usr/local/cpuminer"' }
+    - { regexp: '^export PATH="\${MINERENV_ROOT}:\${PATH}"', line: 'export PATH="${MINERENV_ROOT}:${PATH}"' }

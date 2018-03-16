@@ -1,0 +1,8 @@
+---
+
+- name: copy la_pool.sh
+  copy:
+    src: la_pool.sh
+    dest: /opt/la_pool.sh
+    mode: 0755
+    group: wheel
