@@ -11,4 +11,6 @@ fi
 
 core=$1
 
-minerd -a yescrypt -o stratum+tcp://jp.lapool.me:3014 -t $core -u astail.linux1 -p erio
+if [ "$core" != "stop" ]; then
+  /usr/local/cpuminer/minerd -a yescrypt -o stratum+tcp://jp.lapool.me:3014 -t $core -u astail.linux1 -p erio
+fi
