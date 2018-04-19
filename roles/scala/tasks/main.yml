@@ -1,0 +1,29 @@
+---
+
+- name: install java
+  yum:
+    name: "{{ item }}"
+  with_items:
+    - java-1.8.0-openjdk.x86_64
+    - java-1.8.0-openjdk-devel.x86_64
+
+- name: wget scala.tgz
+  get_url:
+    url: "http://downloads.typesafe.com/scala/{{ scala_version }}/scala-{{ scala_version }}.tgz"
+    dest: "{{ tmp }}/scala-{{ scala_version }}.tgz"
+
+- name: unarchive scala.tgz
+  unarchive:
+    remote_src: yes
+    src: "/{{ tmp }}/scala-{{ scala_version }}.tgz"
+    dest: "/usr/local"
+
+- name: bashrc scala path
+  lineinfile:
+    dest: /etc/bashrc
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: EOF
+  with_items:
+    - { regexp: '^export SCALA_HOME=/usr/local/scala-{{ scala_version }}', line: 'export SCALA_HOME=/usr/local/scala-{{ scala_version }}' }
+    - { regexp: '^export PATH="\${SCALA_HOME}/bin:\${PATH}"', line: 'export PATH="${SCALA_HOME}/bin:${PATH}"' }
