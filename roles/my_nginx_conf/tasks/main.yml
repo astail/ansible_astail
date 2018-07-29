@@ -12,15 +12,15 @@
     dest: /etc/nginx/log_format.conf
   notify: restart nginx service
 
-- name: copy astail.conf
+- name: copy {{ server_group_name }}.conf
   template:
-    src: "astail.conf.{{ astel_env }}"
-    dest: /etc/nginx/conf.d/astail.conf
+    src: "{{ server_group_name }}.conf.{{ astel_env }}"
+    dest: /etc/nginx/conf.d/{{ server_group_name }}.conf
   notify: restart nginx service
 
-- name: mkdir /var/log/nginx/astail
+- name: mkdir /var/log/nginx/{{ server_group_name }}
   file:
-    path: /var/log/nginx/astail
+    path: "/var/log/nginx/{{ server_group_name }}"
     state: directory
     owner: nginx
     group: nginx

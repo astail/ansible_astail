@@ -16,3 +16,17 @@
     - cpuminer
     - my_cpuminer
     - scala
+
+- hosts: n2
+  become: true
+  roles:
+    - common
+    - iptables
+    - sshd
+    - oracle_jdk
+    - rbenv
+    - nginx
+    - php_fpm
+    - my_nginx_conf
+    - mysql
+    - scala

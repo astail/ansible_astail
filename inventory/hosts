@@ -1,5 +1,19 @@
 [astail_net]
 astail.net
 
+[n2]
+192.168.0.70
+
+
+
+[astail_net:vars]
+server_group_name = astail
+web_root = /var/www/astail
+
+[n2:vars]
+server_group_name = n2
+web_root = /var/www/n2
+
 [production:children]
 astail_net
+n2

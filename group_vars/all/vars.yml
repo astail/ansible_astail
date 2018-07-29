@@ -6,7 +6,6 @@ ruby_version: 2.4.1
 scala_version: 2.11.8
 
 db_root_user_password: "{{ vault_db_root_user_password }}"
-web_root: /var/www/astail
 
 wordpress_version: 4.7.4
 
