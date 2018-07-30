@@ -4,6 +4,10 @@
   yum:
     name: python-devel
 
+- name: yum install libcurl-devel
+  yum:
+    name: libcurl-devel
+
 - name: git clone macchky/cpuminer
   git:
     version: master
