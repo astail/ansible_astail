@@ -1,11 +1,8 @@
 server {
   listen       80;
-  server_name  localhost 192.168.0.70;
+  server_name  localhost;
   root   {{ web_root }};
   index  index.php index.html;
-
-  access_log /var/log/nginx/{{ server_group_name }}/access.log ltsv;
-
   charset UTF-8;
   client_max_body_size 2G;
 
@@ -19,9 +16,6 @@ server {
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     fastcgi_param PATH_INFO $fastcgi_path_info;
   }
-
-  if ($host !~ 192.168.0.70) {
-    return 301 http://$host$request_uri;
-  }
-
+  access_log  /var/log/nginx/{{ server_group_name }}/access.log ltsv;
+  error_log   /var/log/nginx/{{ server_group_name }}/error.log warn;
 }
