@@ -30,3 +30,5 @@
     - my_nginx_conf
     - mysql
     - scala
+    - pt_common
+    - arib25

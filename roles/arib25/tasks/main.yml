@@ -1,0 +1,24 @@
+---
+
+- name: check arib25 install
+  command: ls /usr/local/include
+  register: bin
+  changed_when: bin.rc == 1
+  failed_when: bin == 1
+
+- name: wget arib25
+  get_url:
+    url: http://hg.honeyplanet.jp/pt1/archive/c44e16dbb0e2.zip
+    dest: "{{ tmp }}/c44e16dbb0e2.zip"
+  when: bin.stdout.find('arib25') == -1
+
+- name: unzip c44e16dbb0e2.zip
+  unarchive:
+    src: "{{ tmp }}/c44e16dbb0e2.zip"
+    dest: "{{ tmp }}"
+    remote_src: yes
+  when: bin.stdout.find('arib25') == -1
+
+- name: make && make install
+  shell: cd {{ tmp }}/pt1-c44e16dbb0e2/arib25 && make && make install
+  when: bin.stdout.find('arib25') == -1

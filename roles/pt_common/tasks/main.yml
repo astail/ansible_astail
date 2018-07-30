@@ -1,0 +1,18 @@
+---
+
+- name: install common
+  yum: name={{ item }} state=present
+  with_items:
+   - pcsc-lite
+   - pcsc-lite-devel
+   - pcsc-lite-libs
+   - ccid
+   - wget
+   - perl-ExtUtils-MakeMaker
+   - perl-CPANPLUS
+   - svn
+   - automake
+   - yum-utils.noarch
+   - man
+   - openssl-devel
+   - at
