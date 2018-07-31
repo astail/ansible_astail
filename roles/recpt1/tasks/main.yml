@@ -1,0 +1,37 @@
+---
+
+- name: check recpt1 install
+  command: ls /usr/local/bin
+  register: bin
+  changed_when: bin.rc == 1
+  failed_when: bin == 1
+
+- name: wget recpt1.zip
+  get_url:
+    url: https://github.com/stz2012/recpt1/archive/master.zip
+    dest: "{{ tmp }}/recpt1.zip"
+  when: bin.stdout.find('recpt1') == -1
+
+- name: unzip recpt1.zip
+  unarchive:
+    src: "{{ tmp }}/recpt1.zip"
+    dest: "{{ tmp }}"
+    remote_src: yes
+  when: bin.stdout.find('recpt1') == -1
+
+- name: sed -i -e "s/pt1video/pt3video/g" pt1_dev.h
+  replace:
+    dest: '{{ tmp }}/recpt1-master/recpt1/pt1_dev.h'
+    regexp: 'pt1video'
+    replace: 'pt3video'
+  when: bin.stdout.find('recpt1') == -1
+
+- name: make && make install
+  shell: ./autogen.sh && ./configure --enable-b25 && make && make install
+  args:
+    chdir: "{{ tmp }}/recpt1-master/recpt1"
+  when: bin.stdout.find('recpt1') == -1
+
+- name: add conf
+  shell: echo "/usr/local/lib" > /etc/ld.so.conf.d/recpt1.conf && ldconfig
+  when: bin.stdout.find('recpt1') == -1
