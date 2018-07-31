@@ -1,7 +1,7 @@
 ---
 
 - name: check recpt1 install
-  command: ls /usr/local/bin
+  command: ls /usr/local/bin/
   register: bin
   changed_when: bin.rc == 1
   failed_when: bin == 1

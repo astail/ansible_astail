@@ -1,7 +1,7 @@
 ---
 
 - name: check pcsc install
-  command: ls /usr/local/lib64/perl5/Chipcard
+  command: ls /usr/local/lib64/perl5/Chipcard/
   register: pcsc
   changed_when: pcsc.rc == 1
   failed_when: pcsc == 1

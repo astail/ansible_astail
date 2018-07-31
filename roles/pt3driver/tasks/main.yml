@@ -1,7 +1,7 @@
 ---
 
 - name: check 99-pt3.rules install
-  command: ls /etc/udev/rules.d
+  command: ls /etc/udev/rules.d/
   register: bin
   changed_when: bin.rc == 1
   failed_when: bin == 1
