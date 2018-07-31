@@ -31,3 +31,10 @@
     dest: /bin/node
     state: link
     force: yes
+
+- name: ln -s /usr/local/bin/npm /bin/npm
+  file:
+    src: /usr/local/bin/npm
+    dest: /bin/npm
+    state: link
+    force: yes

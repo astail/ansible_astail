@@ -145,3 +145,9 @@
     name: ntpd
     state: started
     enabled: yes
+
+- name: add path /etc/sudoers
+  replace:
+    dest: '/etc/sudoers'
+    regexp: 'secure_path = /sbin:/bin:/usr/sbin:/usr/bin'
+    replace: 'secure_path = /sbin:/bin:/usr/sbin:/usr/local/bin:/usr/bin'
