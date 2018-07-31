@@ -1,0 +1,63 @@
+---
+
+- name: check pcsc install
+  command: ls /usr/local/lib64/perl5/Chipcard
+  register: pcsc
+  changed_when: pcsc.rc == 1
+  failed_when: pcsc == 1
+
+- name: wget pcsc-perl-1.4.14.tar.bz2
+  get_url:
+    url: http://ludovic.rousseau.free.fr/softwares/pcsc-perl/pcsc-perl-1.4.14.tar.bz2
+    dest: /usr/local/src/pcsc-perl-1.4.14.tar.bz2
+  when: pcsc.stdout.find('PCSC.pod') == -1
+
+- name: tar jxf pcsc-perl-1.4.14.tar.bz2
+  unarchive:
+    src: "/usr/local/src/pcsc-perl-1.4.14.tar.bz2"
+    dest: "/usr/local/src"
+    remote_src: yes
+  when: pcsc.stdout.find('PCSC.pod') == -1
+
+- name: perl ./Makefile.PL
+  shell: perl ./Makefile.PL && make && make install
+  args:
+    chdir: /usr/local/src/pcsc-perl-1.4.14
+  when: pcsc.stdout.find('PCSC.pod') == -1
+
+- name: check pcsc install
+  command: ls /usr/local/bin
+  register: pcsc_tools
+  changed_when: pcsc.rc == 1
+  failed_when: pcsc == 1
+
+- name: wget pcsc-tools-1.5.3.tar.bz2
+  get_url:
+    url: http://ludovic.rousseau.free.fr/softwares/pcsc-tools/pcsc-tools-1.5.3.tar.bz2
+    dest: /usr/local/src/pcsc-tools-1.5.3.tar.bz2
+  when: pcsc_tools.stdout.find('pcsc_scan') == -1
+
+- name: tar zvxf pcsc-tools-1.5.3.tar.bz2
+  unarchive:
+    src: "/usr/local/src/pcsc-tools-1.5.3.tar.bz2"
+    dest: "/usr/local/src"
+    remote_src: yes
+  when: pcsc_tools.stdout.find('pcsc_scan') == -1
+
+- name: ./configure make make install
+  shell: ./configure && make && make install
+  args:
+    chdir: /usr/local/src/pcsc-tools-1.5.3
+  when: pcsc_tools.stdout.find('pcsc_scan') == -1
+
+- name: service messagebus start
+  service:
+    name: messagebus
+    state: started
+    enabled: yes
+
+- name: service pcscd start
+  service:
+    name: pcscd
+    state: started
+    enabled: yes
