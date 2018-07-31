@@ -1,0 +1,25 @@
+---
+
+- name: install pm2
+  npm:
+    name: pm2
+    version: '2.10.4'
+    global: yes
+
+- name: install mirakurun
+  npm:
+    name: mirakurun
+    global: yes
+    production: yes
+    executable: /usr/local/bin/npm --unsafe-perm=true
+
+- name: install rivarun
+  npm:
+    name: rivarun
+    global: yes
+
+- name: install arib-b25-stream-test
+  npm:
+    name: arib-b25-stream-test
+    global: yes
+    executable: /usr/bin/npm --unsafe-perm=true
