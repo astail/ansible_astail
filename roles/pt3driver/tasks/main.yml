@@ -1,0 +1,26 @@
+---
+
+- name: check 99-pt3.rules install
+  command: ls /etc/udev/rules.d
+  register: bin
+  changed_when: bin.rc == 1
+  failed_when: bin == 1
+
+- name: wget master.zip
+  get_url:
+    url: https://github.com/m-tsudo/pt3/archive/master.zip
+    dest: "{{ tmp }}/archive.zip"
+  when: bin.stdout.find('99-pt3.rules') == -1
+
+- name: unzip archive.zip
+  unarchive:
+    src: "{{ tmp }}/archive.zip"
+    dest: "{{ tmp }}"
+    remote_src: yes
+  when: bin.stdout.find('99-pt3.rules') == -1
+
+- name: make && make install
+  shell: make && make install
+  args:
+    chdir: "{{ tmp }}/pt3-master"
+  when: bin.stdout.find('99-pt3.rules') == -1
