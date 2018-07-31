@@ -1,0 +1,28 @@
+---
+
+- name: check node install
+  command: node -v
+  register: node
+  changed_when: node.rc == 1
+  failed_when: node == 1
+  become: false
+
+- name: install nodejs npm
+  yum:
+    name: "{{ item }}"
+    enablerepo: epel
+  with_items:
+    - nodejs
+    - npm
+  when: "node.stdout != 'v{{ node_version }}'"
+
+- name: npm install n
+  npm:
+    name: n
+    global: yes
+  when: "node.stdout != 'v{{ node_version }}'"
+
+- name: n {{ node_version }}
+  shell: "n {{ node_version }}"
+  tags: skip_ansible_lint
+  when: "node.stdout != 'v{{ node_version }}'"
