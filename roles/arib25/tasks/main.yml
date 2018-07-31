@@ -20,5 +20,7 @@
   when: bin.stdout.find('arib25') == -1
 
 - name: make && make install
-  shell: cd {{ tmp }}/pt1-c44e16dbb0e2/arib25 && make && make install
+  shell: make && make install
+  args:
+    chdir: "{{ tmp }}/pt1-c44e16dbb0e2/arib25"
   when: bin.stdout.find('arib25') == -1
