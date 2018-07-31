@@ -41,6 +41,7 @@
     name: "{{ item }}"
   register: install_status
   with_items:
+   - kernel-devel
    - acpid
    - sysstat
    - tcpdump
