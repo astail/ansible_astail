@@ -1,12 +1,5 @@
 ---
 
-- name: check node install
-  command: node -v
-  register: node
-  changed_when: node.rc == 1
-  failed_when: node == 1
-  become: false
-
 - name: install nodejs npm
   yum:
     name: "{{ item }}"
@@ -14,15 +7,27 @@
   with_items:
     - nodejs
     - npm
-  when: "node.stdout != 'v{{ node_version }}'"
+
+- name: check node install
+  command: node -v
+  register: node
+  changed_when: node.rc == 1
+  failed_when: node == 1
 
 - name: npm install n
   npm:
     name: n
     global: yes
-  when: "node.stdout != 'v{{ node_version }}'"
+  when: node.stdout.find('{{ node_version }}') == -1
 
 - name: n {{ node_version }}
   shell: "n {{ node_version }}"
   tags: skip_ansible_lint
-  when: "node.stdout != 'v{{ node_version }}'"
+  when: node.stdout.find('{{ node_version }}') == -1
+
+- name: ln -s /usr/local/bin/node /bin/node
+  file:
+    src: /usr/local/bin/node
+    dest: /bin/node
+    state: link
+    force: yes
