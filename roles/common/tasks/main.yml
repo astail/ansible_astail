@@ -31,53 +31,50 @@
 
 - name: yum group-install
   yum:
-    name: "{{ item }}"
-  with_items:
-   - "@Base"
-   - "@Development tools"
+    name:
+      - "@Base"
+      - "@Development tools"
 
 - name: install common service
   yum:
-    name: "{{ item }}"
+    name:
+      - kernel-devel
+      - acpid
+      - sysstat
+      - tcpdump
+      - git
+      - dstat
+      - iotop
+      - screen
+      - zsh
+      - ksh
+      - gdisk
+      - ncurses-devel
+      - rsyslog
+      - ntp
+      - logrotate
+      - ethtool
+      - sssd
+      - sssd-client
+      - sssd-ldap
+      - openldap-clients
+      - bind-utils
+      - net-tools
+      - telnet
+      - traceroute
+      - wget
+      - vim
+      - authconfig
+      - ncurses
   register: install_status
-  with_items:
-   - kernel-devel
-   - acpid
-   - sysstat
-   - tcpdump
-   - git
-   - dstat
-   - iotop
-   - screen
-   - zsh
-   - ksh
-   - gdisk
-   - ncurses-devel
-   - rsyslog
-   - ntp
-   - logrotate
-   - ethtool
-   - sssd
-   - sssd-client
-   - sssd-ldap
-   - openldap-clients
-   - bind-utils
-   - net-tools
-   - telnet
-   - traceroute
-   - wget
-   - vim
-   - authconfig
-   - ncurses
 
 - name: install epel common service
   yum:
-    name: "{{ item }}"
+    name:
+      - iftop
+      - htop
+      - jq
     enablerepo: epel
-  with_items:
-   - iftop
-   - htop
-   - jq
 
 - name: epel repository disable
   replace:

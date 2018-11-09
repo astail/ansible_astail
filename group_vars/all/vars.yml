@@ -10,3 +10,6 @@ db_root_user_password: "{{ vault_db_root_user_password }}"
 wordpress_version: 4.7.4
 
 HUBOT_SLACK_TOKEN: "{{ vault_HUBOT_SLACK_TOKEN }}"
+
+domain: astail.net
+letsencrypt_mail: "{{ vault_letsencrypt_mail }}"

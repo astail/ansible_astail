@@ -1,0 +1,20 @@
+---
+
+- name: install python2-certbot-nginx
+  yum:
+   name: python2-certbot-nginx
+   enablerepo: epel
+
+- name: certbot
+  shell: certbot --nginx certonly -d "{{ domain }}" --email "{{ letsencrypt_mail }}" --agree-tos -n
+  args:
+    creates: /etc/letsencrypt/live/"{{ domain }}"/privkey.pem
+
+- name: auto update ssl cron
+  cron:
+    name: "update ssl"
+    minute: "0"
+    hour: "1"
+    day: "1"
+    job: "certbot renew --force-renewal && systemctl restart nginx"
+    user: "root"

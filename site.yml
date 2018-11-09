@@ -7,14 +7,12 @@
     - sshd
     - iptables
     - oracle_jdk
-    - rbenv
     - nginx
     - php_fpm
+    - letsencrypt
     - my_nginx_conf
     - mysql
     - wordpress
-    - cpuminer
-    - my_cpuminer
     - scala
 
 - hosts: n2
