@@ -2,11 +2,10 @@
 
 - name: install nodejs npm
   yum:
-    name: "{{ item }}"
+    name:
+      - nodejs
+      - npm
     enablerepo: epel
-  with_items:
-    - nodejs
-    - npm
 
 - name: check node install
   command: node -v
@@ -18,6 +17,7 @@
   npm:
     name: n
     global: yes
+  tags: skip_ansible_lint
   when: node.stdout.find('{{ node_version }}') == -1
 
 - name: n {{ node_version }}
