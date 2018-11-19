@@ -14,6 +14,7 @@
     - mysql
     - wordpress
     - scala
+    - ika_rsync
 
 - hosts: n2
   become: true

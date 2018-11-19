@@ -13,3 +13,5 @@ HUBOT_SLACK_TOKEN: "{{ vault_HUBOT_SLACK_TOKEN }}"
 
 domain: astail.net
 letsencrypt_mail: "{{ vault_letsencrypt_mail }}"
+
+rsync_allow_ip: "{{ vault_rsync_allow_ip }}"

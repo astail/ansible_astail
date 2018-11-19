@@ -1,0 +1,41 @@
+---
+
+- name: yum install xinetd rsync
+  yum:
+    name:
+      - xinetd
+      - rsync
+
+- name: copy rsyncd.conf
+  template:
+    src: rsyncd.conf
+    dest: /etc/rsyncd.conf
+
+- name: copy xinetd_rsync conf
+  copy:
+    src: xinetd_rsync
+    dest: /etc/xinetd.d/rsync
+
+- name: xinetd service start
+  systemd:
+    name: xinetd
+    state: started
+    enabled: yes
+
+- name: mkdir creatives nginx dir
+  file:
+    path: /var/nginx/ika
+    state: directory
+    owner: nginx
+    group: nginx
+    recurse: yes
+
+- name: copy ika.conf
+  template:
+    src: ika.conf
+    dest: /etc/nginx/conf.d/ika.conf
+
+- name: nginx service restart
+  systemd:
+    name: nginx
+    state: restarted
