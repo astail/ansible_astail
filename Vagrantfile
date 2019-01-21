@@ -3,8 +3,8 @@
 
 Vagrant.configure(2) do |config|
 
-#  config.vm.box = "bento/centos-7.4"
-  config.vm.box = "astel_centos7"
+  config.vm.box = "bento/centos-7.5"
+#  config.vm.box = "astel_centos7"
 
   config.vm.provider "virtualbox" do |v|
     v.memory = 1024
