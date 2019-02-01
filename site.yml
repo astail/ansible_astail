@@ -39,10 +39,9 @@
 - hosts: aws
   become: true
   roles:
-    - aws_common
+#    - aws_common
 #    - sshd
-#    - iptables
-#    - oracle_jdk
+    - oracle_jdk
 #    - nginx
 #    - php_fpm
 #    - letsencrypt
