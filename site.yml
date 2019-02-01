@@ -35,3 +35,18 @@
     - recpt1
     - nodejs
     - mirakurun
+
+- hosts: aws
+  become: true
+  roles:
+    - aws_common
+#    - sshd
+#    - iptables
+#    - oracle_jdk
+#    - nginx
+#    - php_fpm
+#    - letsencrypt
+#    - my_nginx_conf
+#    - mysql
+#    - wordpress
+#    - scala
