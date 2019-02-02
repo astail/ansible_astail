@@ -1,7 +1,12 @@
 server {
   listen       80;
+  server_name {{ domain }};
+  return 301 https://$host$request_uri;
+}
+
+server {
   listen       443 ssl;
-  server_name  astail.net;
+  server_name  {{ domain }};
   root   {{ web_root }}/wordpress;
   index  index.php index.html;
   charset UTF-8;
@@ -10,8 +15,8 @@ server {
   fastcgi_read_timeout 3600s;
   fastcgi_buffers 64 4K;
 
-  ssl_certificate_key  /etc/letsencrypt/live/astail.net/privkey.pem;
-  ssl_certificate      /etc/letsencrypt/live/astail.net/cert.pem;
+  ssl_certificate_key  /etc/letsencrypt/live/{{ domain }}/privkey.pem;
+  ssl_certificate      /etc/letsencrypt/live/{{ domain }}/cert.pem;
   ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
   ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS;
   ssl_prefer_server_ciphers   on;
