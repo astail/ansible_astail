@@ -46,6 +46,6 @@
 #    - aws_php_fpm
 #    - aws_letsencrypt
 #    - my_nginx_conf
-    - mysql
-#    - wordpress
+#    - mysql
+    - wordpress
 #    - scala

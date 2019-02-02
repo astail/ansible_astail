@@ -20,4 +20,4 @@
     dest: "{{ web_root }}"
     owner: nginx
     group: wheel
-  when: wget_zip|changed
+  when: wget_zip is changed
