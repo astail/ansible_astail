@@ -2,10 +2,9 @@
 
 - name: install java
   yum:
-    name: "{{ item }}"
-  with_items:
-    - java-1.8.0-openjdk.x86_64
-    - java-1.8.0-openjdk-devel.x86_64
+    name:
+      - java-1.8.0-openjdk.x86_64
+      - java-1.8.0-openjdk-devel.x86_64
 
 - name: wget scala.tgz
   get_url:
@@ -15,7 +14,7 @@
 - name: unarchive scala.tgz
   unarchive:
     remote_src: yes
-    src: "/{{ tmp }}/scala-{{ scala_version }}.tgz"
+    src: "{{ tmp }}/scala-{{ scala_version }}.tgz"
     dest: "/usr/local"
 
 - name: bashrc scala path

@@ -47,5 +47,5 @@
 #    - aws_letsencrypt
 #    - my_nginx_conf
 #    - mysql
-    - wordpress
-#    - scala
+#    - wordpress
+    - scala
