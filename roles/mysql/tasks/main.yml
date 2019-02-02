@@ -31,8 +31,8 @@
 - name: first check password
   shell: grep 'temporary password' /var/log/mysqld.log | awk '{ print $NF }'
   register: mysql_passwd
-  when: mysql_status_check|failed
+  when: mysql_status_check is failed
 
 - name: fix root passwd
   command: mysqladmin -p{{ mysql_passwd.stdout }} password {{ db_root_user_password }}
-  when: mysql_status_check|failed
+  when: mysql_status_check is failed
