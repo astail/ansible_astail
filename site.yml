@@ -41,10 +41,10 @@
   roles:
 #    - aws_common
 #    - sshd
-    - oracle_jdk
+#    - oracle_jdk
 #    - nginx
-#    - php_fpm
-#    - letsencrypt
+#    - aws_php_fpm
+    - aws_letsencrypt
 #    - my_nginx_conf
 #    - mysql
 #    - wordpress

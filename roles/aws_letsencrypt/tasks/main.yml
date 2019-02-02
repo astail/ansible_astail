@@ -1,0 +1,46 @@
+---
+
+- name: git clone certbot/certbot
+  git:
+    version: master
+    repo: git@github.com:certbot/certbot
+    dest: "{{ tmp }}/certbot"
+    accept_hostkey: yes
+  become: false
+  ignore_errors: true
+
+- name: move file /tmp/certbot/certbot-auto to /usr/local/bin/certbot-auto
+  command: "cp -rf {{ tmp }}/certbot/certbot-auto /usr/local/bin/certbot-auto"
+  args:
+    creates: /usr/local/bin/certbot-auto
+
+- name: fix certbot-auto for aws-certbot-auto
+  replace:
+    dest: /usr/local/bin/certbot-auto
+    regexp: '.*-iq "Amazon Linux".*'
+    replace: "elif grep -i 'Amazon Linux' /etc/issue > /dev/null 2>&1 || grep 'cpe:.*:amazon_linux:2' /etc/os-release > /dev/null 2>&1; then"
+
+- name: stop nginx
+  systemd:
+    name: nginx
+    state: stopped
+
+- name: certbot
+  shell: "certbot-auto certonly -a standalone -d {{ domain }} --email {{ letsencrypt_mail }} -n --agree-tos --debug"
+  args:
+    creates: "/etc/letsencrypt/live/{{ domain }}/privkey.pem"
+  tags: skip_ansible_lint
+
+- name: start nginx
+  systemd:
+    name: nginx
+    state: started
+
+- name: auto update ssl cron
+  cron:
+    name: "update ssl"
+    minute: "0"
+    hour: "1"
+    day: "1"
+    job: "systemctl stop nginx && certbot-auto certonly -a standalone -d {{ domain }} --email {{ letsencrypt_mail }} -n --agree-tos --debug && systemctl start nginx"
+    user: "root"
