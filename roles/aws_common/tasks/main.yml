@@ -1,0 +1,64 @@
+---
+
+- name: install libselinux-python
+  yum:
+    name: libselinux-python
+
+- name: Timezone Set
+  file:
+    src: /usr/share/zoneinfo/Asia/Tokyo
+    dest: /etc/localtime
+    state: link
+    force: yes
+
+- name: install common service
+  yum:
+    name:
+      - kernel-devel
+      - tcpdump
+      - git
+      - dstat
+      - iotop
+      - screen
+      - zsh
+      - ksh
+      - gdisk
+      - ncurses-devel
+      - rsyslog
+      - ntp
+      - logrotate
+      - ethtool
+      - sssd
+      - sssd-client
+      - sssd-ldap
+      - openldap-clients
+      - bind-utils
+      - net-tools
+      - telnet
+      - traceroute
+      - wget
+      - vim
+      - authconfig
+      - ncurses
+      - htop
+      - jq
+      - tmux
+  register: install_status
+
+- name: sed DefaultLimitNOFILE=65535 /etc/systemd/system.conf
+  replace:
+    dest: '/etc/systemd/system.conf'
+    regexp: '#DefaultLimitNOFILE='
+    replace: 'DefaultLimitNOFILE=65535'
+
+- name: start ntpd
+  systemd:
+    name: ntpd
+    state: started
+    enabled: yes
+
+- name: add path /etc/sudoers
+  replace:
+    dest: '/etc/sudoers'
+    regexp: 'secure_path = /sbin:/bin:/usr/sbin:/usr/bin'
+    replace: 'secure_path = /sbin:/bin:/usr/sbin:/usr/local/bin:/usr/bin'

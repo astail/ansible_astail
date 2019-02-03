@@ -8,7 +8,7 @@
 - name: certbot
   shell: certbot --nginx certonly -d "{{ domain }}" --email "{{ letsencrypt_mail }}" --agree-tos -n
   args:
-    creates: /etc/letsencrypt/live/"{{ domain }}"/privkey.pem
+    creates: "/etc/letsencrypt/live/{{ domain }}/privkey.pem"
   tags: skip_ansible_lint
 
 - name: auto update ssl cron

@@ -1,0 +1,14 @@
+---
+
+#memory_limit >= post_max_size >= upload_max_filesize
+
+php_ini:
+  - { name: "post_max_size", value: "2G" }
+  - { name: "upload_max_filesize", value: "2G" }
+  - { name: "max_file_uploads", value: "200" }
+  - { name: "max_input_time", value: "3600" }
+  - { name: "max_execution_time", value: "3600" }
+  - { name: "session.gc_maxlifetime", value: "3600" }
+  - { name: "memory_limit", value: "2G" }
+#zabbix2.2
+#  - { name: "always_populate_raw_post_data", value: "-1" }

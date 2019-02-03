@@ -1,0 +1,85 @@
+---
+
+- name: install php php-fpm php-mysqlnd php-mbstring php-bcmath php-gd php-xml php-pear php-devel pcre-devel php-cli php-ldap php-pdo php-process
+  yum:
+    name:
+      - php
+      - php-fpm
+      - php-mysqlnd
+      - php-mbstring
+      - php-bcmath
+      - php-gd
+      - php-xml
+      - php-pear
+      - php-devel
+      - pcre-devel
+      - php-cli
+      - php-ldap
+      - php-pdo
+      - php-process
+    state: present
+
+- name: copy www.conf
+  copy:
+    src: www.conf
+    dest: /etc/php-fpm.d/www.conf
+
+- name: mkdir /var/log/php-fpm
+  file:
+    path: /var/log/php-fpm
+    owner: nginx
+    group: wheel
+    state: directory
+    mode: 0775
+
+- name: mkdir /var/run/php-fpm
+  file:
+    path: /var/run/php-fpm
+    owner: nginx
+    group: wheel
+    state: directory
+    mode: 0777
+
+- name: mkdir /var/nginx
+  file:
+    path: /var/nginx
+    owner: nginx
+    group: wheel
+    state: directory
+    mode: 0775
+
+- name: chown nginx /var/lib/php
+  file:
+    path: "/var/lib/php/{{ item }}"
+    owner: nginx
+    group: wheel
+    state: directory
+    recurse: yes
+  with_items:
+    - opcache
+    - session
+    - wsdlcache
+
+- name: edit typezone
+  lineinfile:
+    regexp: '^date.timezone'
+    line: 'date.timezone = Asia/Tokyo'
+    insertafter: EOF
+    state: present
+    dest: /etc/php.ini
+
+- name: edit php.ini
+  lineinfile:
+    regexp: '^{{ item.name }}'
+    line: '{{ item.name }} = {{ item.value }}'
+    insertafter: EOF
+    state: present
+    dest: /etc/php.ini
+  with_items: '{{ php_ini }}'
+  notify: restart php-fpm
+
+- name: start php-fpm service
+  service:
+    name: php-fpm
+    state: started
+    enabled: yes
