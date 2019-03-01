@@ -42,5 +42,5 @@
     minute: "0"
     hour: "1"
     day: "1"
-    job: "systemctl stop nginx && certbot-auto certonly -a standalone -d {{ domain }} --email {{ letsencrypt_mail }} -n --agree-tos --debug && systemctl start nginx"
+    job: "systemctl stop nginx && /usr/local/bin/certbot-auto certonly -a standalone -d {{ domain }} --email {{ letsencrypt_mail }} -n --agree-tos --debug && systemctl start nginx"
     user: "root"
