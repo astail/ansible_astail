@@ -26,8 +26,7 @@
     line: 'umask 0022'
 
 - name: install epel repository
-  yum:
-    name: epel-release
+  command: amazon-linux-extras install epel -y
 
 - name: yum group-install
   yum:
@@ -84,7 +83,6 @@
 
 - name: systemctl daemon reload
   systemd:
-    name: "*"
     daemon_reload: yes
 
 - name: start common service

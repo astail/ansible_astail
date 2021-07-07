@@ -1,0 +1,10 @@
+---
+
+- name: amazon-linux-extras enable corretto8
+  command: amazon-linux-extras enable corretto8
+
+- name: install java-1.8.0-amazon-corretto
+  yum:
+    name:
+      - java-1.8.0-amazon-corretto
+      - java-1.8.0-amazon-corretto-devel

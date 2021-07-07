@@ -6,7 +6,7 @@
     - common
     - sshd
     - iptables
-    - oracle_jdk
+    - amazon_corretto_8
     - nginx
     - php_fpm
     - letsencrypt
