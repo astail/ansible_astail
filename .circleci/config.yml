@@ -5,12 +5,9 @@ jobs:
   build:
     working_directory: ~/ansible_astail
     docker:
-      - image: circleci/python:2.7-stretch
+      - image: astail/ansible-ci-base
     steps:
       - checkout
-
-      - run: sudo apt-get install libyaml-dev
-      - run: sudo pip install ansible ansible-lint==3.4.23
       - run: ansible --version
       - run: echo "${ANSIBLE_VAULT_PASS}" > ansible_vault.txt
       - run:
@@ -23,11 +20,3 @@ jobs:
            ls roles | sed "s/^/    - /g" >> all.yml
       - run: ansible-lint all.yml
       - run: ansible-playbook -i "localhost," all.yml --syntax-check --vault-password-file ansible_vault.txt
-
-#      - run: echo "deb http://download.virtualbox.org/virtualbox/debian stretch contrib" | sudo tee -a /etc/apt/sources.list
-#      - run: wget -q -O- https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo apt-key add -
-#      - run: wget -q -O- https://www.virtualbox.org/download/oracle_vbox.asc | sudo apt-key add -
-#      - run: sudo apt-get update
-#      - run: sudo apt-get install -y virtualbox-5.2
-#      - run: sudo apt-get install -y vagrant
-#      - run: vagrant up
