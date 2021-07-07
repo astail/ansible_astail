@@ -8,7 +8,6 @@ jobs:
       - image: astail/ansible-ci-base
     steps:
       - checkout
-
       - run: ansible --version
       - run: echo "${ANSIBLE_VAULT_PASS}" > ansible_vault.txt
       - run:
