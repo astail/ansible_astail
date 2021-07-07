@@ -5,12 +5,10 @@ jobs:
   build:
     working_directory: ~/ansible_astail
     docker:
-      - image: circleci/python:2.7-stretch
+      - image: docker.pkg.github.com/astail/github-packages-docker/ansible-ci-base:0.3
     steps:
       - checkout
 
-      - run: sudo apt-get install libyaml-dev
-      - run: sudo pip install ansible ansible-lint==3.4.23
       - run: ansible --version
       - run: echo "${ANSIBLE_VAULT_PASS}" > ansible_vault.txt
       - run:
